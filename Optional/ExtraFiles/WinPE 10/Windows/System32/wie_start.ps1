@@ -37,8 +37,8 @@ function Test-Server-Conn()
     clear
     Write-Host
     
-    Write-Host "Could Not Contact CloneDeploy Server.  Possible Reasons:"
-    Write-Host "The CloneDeploy Web Service Is Not Functioning."  
+    Write-Host "Could Not Contact Theopenem Com Server.  Possible Reasons:"
+    Write-Host "The Web Service Is Not Functioning."  
     Write-Host "Try Entering ${script:web}Test In A Web Browser. "
     Write-Host "A Driver Could Not Be Found For This NIC."
     Write-Host "The Computer Did Not Receive An Ip Address."
@@ -105,7 +105,7 @@ if ($private:uToken)
 }
 else
 {
-    Write-Host " ** CloneDeploy Login To Continue Or Close Window To Cancel ** "
+    Write-Host " ** Theopenem Login To Continue Or Close Window To Cancel ** "
     Write-Host
     Write-Host
     $private:loginCount = 1

@@ -244,10 +244,10 @@ echo ===========================================================================
 	)
 	
 	REM	echo ===============================================================================
-	if /I "%BaseURL%" == "http://0.0.0.0/clonedeploy/" (
+	if /I "%ComServerURL%" == "http://0.0.0.0/" (
 	echo ===============================================================================
-	echo CloneDeploy Web Service Was Not Set
-	echo CloneDeploy Web Service Was Not Set >> "%MyLog%"
+	echo Theopenem ComServer Was Not Set
+	echo Theopenem ComServer Was Not Set >> "%MyLog%"
 	echo ===============================================================================
 	set StopScript=Yes
 	)

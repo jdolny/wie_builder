@@ -204,7 +204,7 @@
 	::Extra Files for WinPE %WinPEVersion% %PLATFORM% Configurations
 	set SRC=%OPTIONAL%\ExtraFiles\WinPE %WinPEVersion% %PLATFORM%
 	robocopy "%SRC%" "%CONTENT%" *.* /e /ndl /nfl /xj /r:0 /w:0
-	echo %BaseURL%api/ClientImaging/ > "%CONTENT%\Windows\System32\web.txt"
+	echo %ComServerURL%clientimaging/ > "%CONTENT%\Windows\System32\web.txt"
 	if [%UniversalToken%] NEQ [] echo %UniversalToken% > "%CONTENT%\Windows\System32\uToken.txt"
 	echo ===============================================================================
 	

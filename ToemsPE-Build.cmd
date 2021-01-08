@@ -1,10 +1,10 @@
 	@echo off
 	pushd %~dp0
 
-	::	Time Zone Reference http://technet.microsoft.com/en-us/library/cc749073(v=ws.10).aspx
+	::Time Zone Reference http://technet.microsoft.com/en-us/library/cc749073(v=ws.10).aspx
 	set TimeZone=Eastern Standard Time
 	set MyLang=en-us
-	set BaseURL=http://0.0.0.0/clonedeploy/
+	set ComServerURL=http://0.0.0.0/
 	set UniversalToken=
 	set CreateISO=true
 	
