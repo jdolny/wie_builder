@@ -1,4 +1,5 @@
 ﻿. x:\wie_menu.ps1
+Add-Content "x:\clientlog.log" "WIE Version: 1.4.0"
 
 $script:web=$(Get-Content x:\windows\system32\web.txt).Trim()
 try
@@ -9,6 +10,13 @@ catch
 {
     #Suppress error if universal token is not used
 }
+
+#check for login debug flag
+if(Test-Path -Path x:\windows\system32\logindebug.txt -PathType Leaf)
+{
+    $login_debug=$true
+}
+
 $script:curlOptions="-sSk"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
@@ -115,6 +123,13 @@ else
         $private:password = Read-Host -Prompt "password" -AsSecureString
         $private:decodedpassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($private:password))
  
+        
+        if($login_debug)
+        {
+            Write-Host "Username: $username"
+            Write-Host "Decoded Password: $private:decodedpassword"
+        }
+
         $private:usernameBytes = [System.Text.Encoding]::UTF8.GetBytes($private:username)
         $private:usernameEncoded =[Convert]::ToBase64String($private:usernameBytes)
 
@@ -122,6 +137,14 @@ else
         $private:passwordEncoded =[Convert]::ToBase64String($private:passwordBytes)
 
         $private:loginResult=$(curl.exe -sSk -F username="$private:usernameEncoded" -F password="$private:passwordEncoded" -F clientIP="" -F task="" "${script:web}ConsoleLogin" --connect-timeout 10 --stderr -)
+        if($login_debug)
+        {
+            Write-Host "Username Base64: $private:usernameEncoded"
+            Write-Host "Password Base64: $private:passwordEncoded"
+            Write-Host "Result: $private:loginResult"
+            Read-Host -Prompt "Press Enter To Continue"
+        }
+
         $private:loginResult=$private:loginResult | ConvertFrom-Json
         if(!$?)
         {

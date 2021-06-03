@@ -6,6 +6,7 @@
 	set MyLang=en-us
 	set ComServerURL=http://0.0.0.0/
 	set UniversalToken=
+	set LoginDebug=false
 	set CreateISO=true
 	
 	set PLATFORM=x64

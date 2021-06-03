@@ -206,6 +206,7 @@
 	robocopy "%SRC%" "%CONTENT%" *.* /e /ndl /nfl /xj /r:0 /w:0
 	echo %ComServerURL%clientimaging/ > "%CONTENT%\Windows\System32\web.txt"
 	if [%UniversalToken%] NEQ [] echo %UniversalToken% > "%CONTENT%\Windows\System32\uToken.txt"
+	if [%LoginDebug%] EQU true echo "logindebug" > "%CONTENT%\Windows\System32\logindebug.txt"
 	echo ===============================================================================
 	
 	goto :eof
