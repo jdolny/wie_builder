@@ -1,0 +1,3 @@
+text eol=crlf
+*.cmd text
+*.ps1 text
