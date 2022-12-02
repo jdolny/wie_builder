@@ -136,6 +136,11 @@
 	echo %sCMD%
 	%sCMD%
 	echo ===============================================================================
+	echo Setting Input Locale using Command:
+	set sCMD="%dism%" /image:"%CONTENT%" /Set-InputLocale:"%InputLocale%"
+	echo %sCMD%
+	%sCMD%
+	echo ===============================================================================
 	goto :eof
 	
 

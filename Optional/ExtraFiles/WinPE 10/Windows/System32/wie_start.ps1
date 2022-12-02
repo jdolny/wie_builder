@@ -1,5 +1,5 @@
 ﻿. x:\wie_menu.ps1
-Add-Content "x:\clientlog.log" "WIE Version: 1.4.0"
+Add-Content "x:\clientlog.log" "WIE Version: 1.5.0"
 
 $script:web=$(Get-Content x:\windows\system32\web.txt).Trim()
 try
@@ -39,7 +39,25 @@ function Check-Download($dlResult, $scriptName)
 
 function Test-Server-Conn()
 {
-  $connResult=$(curl.exe  $script:curlOptions "${script:web}Test" --connect-timeout 10 --stderr -)
+  clear
+  Write-Host " ** Connecting To Theopenem Com Server ** "
+  $private:testConnectionCount = 1
+  $private:sleepCount = 15
+  while($private:testConnectionCount -le 3)
+  {
+    $connResult=$(curl.exe  $script:curlOptions "${script:web}Test" --connect-timeout 10 --stderr -)
+    if("$connResult" -eq "true") { break }
+    else
+    {
+        if($private:testConnectionCount -eq 3) { break }
+        $private:sleepCount = $private:sleepCount * $private:testConnectionCount
+        Write-Host " ** Could Not Contact Server.  Trying Again in $private:sleepCount Seconds ** "
+        Start-Sleep -s $private:sleepCount
+        
+    }
+    $private:testConnectionCount++
+  }
+  
   if("$connResult" -ne "true") 
   {
     clear
@@ -82,6 +100,7 @@ function Test-Server-Conn()
 }
 
 
+
 function Assign-Static-IP()
 {
     $nicSelection=@{}
@@ -107,17 +126,50 @@ function Assign-Static-IP()
 Test-Server-Conn
 clear
 
+$script:serialNumber=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty IdentifyingNumber)
+$script:systemUuid=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty UUID)
+$script:systemModel=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty Name)
+$nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
+ForEach ($nic in $nicList) 
+    {
+      if(!$($nic.MacAddress)) { continue }
+      $script:mac=$nic.MacAddress
+      $script:clientId="$script:mac.$script:serialNumber.$script:systemUuid"
+      $private:webTaskToken=$(curl.exe $script:curlOptions --data "idType=clientId&id=$($script:clientId)" ${script:web}GetWebTaskToken  --connect-timeout 10 --stderr -)
+      if ($private:webTaskToken -and !$private:webTaskToken.ToLower().Contains("error")) {break}
+    }
+
+
 if ($private:uToken)
 {
     $private:userToken=$private:uToken
 }
+elseif ($private:webTaskToken -and !$private:webTaskToken.ToLower().Contains("error"))
+{
+    $private:userToken=$private:webTaskToken
+}
 else
 {
-    Write-Host " ** Theopenem Login To Continue Or Close Window To Cancel ** "
+    ForEach ($nic in $nicList) 
+    {
+      if(!$($nic.MacAddress)) { continue }
+      $script:mac=$nic.MacAddress
+      $script:clientId="$script:mac.$script:serialNumber.$script:systemUuid"
+      $computerObject=$(curl.exe $script:curlOptions --data "idType=clientId&id=$($script:clientId)" ${script:web}GetComputerNameForPe  --connect-timeout 10 --stderr -)
+      $computerObject=$computerObject | ConvertFrom-Json
+      if($?) { 
+        if($computerObject.computerName){break} 
+      }
+    }
+ 
+    Write-Host " Ip Address: $($(Get-WmiObject -Class "Win32_NetworkAdapterConfiguration" -Filter ipenabled=true | Select ipaddress -ExpandProperty ipaddress)[0])"
+    Write-Host " Computer  : $($computerObject.computerName)"
+    Write-Host
+    Write-Host " ** You Must Be Logged In To Continue ** "
     Write-Host
     Write-Host
     $private:loginCount = 1
-    while($private:loginCount -le 2)
+    while($private:loginCount -le 3)
     {
         $private:username = Read-Host -Prompt "username"
         $private:password = Read-Host -Prompt "password" -AsSecureString
