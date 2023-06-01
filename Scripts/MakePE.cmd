@@ -209,9 +209,10 @@
 	::Extra Files for WinPE %WinPEVersion% %PLATFORM% Configurations
 	set SRC=%OPTIONAL%\ExtraFiles\WinPE %WinPEVersion% %PLATFORM%
 	robocopy "%SRC%" "%CONTENT%" *.* /e /ndl /nfl /xj /r:0 /w:0
-	echo %ComServerURL%clientimaging/ > "%CONTENT%\Windows\System32\web.txt"
+	echo %ComServerURL% > "%CONTENT%\Windows\System32\web.txt"
 	if [%UniversalToken%] NEQ [] echo %UniversalToken% > "%CONTENT%\Windows\System32\uToken.txt"
 	if %LoginDebug% EQU true echo "logindebug" > "%CONTENT%\Windows\System32\logindebug.txt"
+	if %RestrictComServers% EQU true echo "restrictcomservers" > "%CONTENT%\Windows\System32\restrictcomservers.txt"
 	echo ===============================================================================
 	
 	goto :eof

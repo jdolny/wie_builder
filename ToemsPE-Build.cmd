@@ -1,4 +1,4 @@
-	::Version 2.0.2
+	::Version 2.0.3
 	@echo off
 	pushd %~dp0
 
@@ -9,6 +9,7 @@
 	set ComServerURL=http://0.0.0.0/
 	set UniversalToken=
 	set LoginDebug=false
+	set RestrictComServers=false
 	set CreateISO=true
 	
 	set PLATFORM=x64
